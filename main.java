@@ -26,7 +26,7 @@ public class main {
     private static JLabel playerHand;
     private static JLabel HouseHand;
     private static JTextArea textArea;
-
+    private static JPanel buttonPanel;
     private static int wager;
 
     static void createDeck(){
@@ -42,7 +42,7 @@ public class main {
        displayWagerInputScreen();
     }
     //Begin chatGPT menu GUI segment 
-    private static void displayWagerInputScreen() {
+    private static void displayWagerInputScreen() { //asks the user how much they want to gamble. Doesn't influence long term gameplay, merely a suggestion
         JFrame wagerFrame = new JFrame("Enter Wager");
         wagerFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel wagerPanel = new JPanel(new GridLayout(3, 1));
@@ -50,12 +50,12 @@ public class main {
         JLabel wagerLabel = new JLabel("Enter your wager:");
         JTextField wagerTextField = new JTextField();
         JButton beginButton = new JButton("Begin");
-
+        //adds the three wager options. Simple 1 by three horizontal grid. A modern classic
         wagerPanel.add(wagerLabel);
         wagerPanel.add(wagerTextField);
         wagerPanel.add(beginButton);
 
-        beginButton.addActionListener(new ActionListener() {
+        beginButton.addActionListener(new ActionListener() { //Adds a listener. Cowritten with chatGPT (like a lot of the main class)
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (wagerTextField.getText().isEmpty()) {
@@ -84,33 +84,34 @@ public class main {
     }
     //End of chatGPT JFrame segment
     private static void createAndShowGUI() {
+        //adds a button panel on the Southern border. like Undertale. or any other turn based RPG
         JFrame frame = new JFrame("Blackjack Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         JPanel buttonPanel = createButtonPanel();
         frame.add(buttonPanel, BorderLayout.SOUTH);
-
+        //adds a text area. originally there would be cards. now there are not. tragic
         textArea = new JTextArea();
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
         frame.add(scrollPane, BorderLayout.CENTER);
-
+        //creates a label panel. wonderful for people who cannot count card values
         JPanel labelPanel = createLabelPanel();
         frame.add(labelPanel, BorderLayout.EAST);
 
-        frame.setSize(800, 600);
+        frame.setSize(1000, 600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
     }
     private static JPanel createLabelPanel(){
-        JPanel panel = new JPanel(new GridLayout(4, 1));
-
-        playerBalance = new JLabel("Balance: "+user.balance+" chips");
+        JPanel panel = new JPanel(new GridLayout(4, 1)); //vertical layout
+        //labels that correspond to things you should know 
+        playerBalance = new JLabel("Change in Balance: "+user.balance+" chips");
         playerWager = new JLabel("Wager: "+user.wager+" chips");
         playerHand = new JLabel("Hand Value: "+user.handValue());;
         HouseHand = new JLabel("House Card: "+mrHouse.hand.get(0).getCardName());
-
+        //adds labels that display all relevant information. If we have to remake this it'll also include frames per second.
         panel.add(playerBalance);
         panel.add(playerWager);
         panel.add(playerHand);
@@ -119,17 +120,17 @@ public class main {
         return panel;
     }
     private static JPanel createButtonPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 4));
+        buttonPanel = new JPanel(new GridLayout(1, 4));
 
         JButton hitButton = new JButton("Hit");
         JButton standButton = new JButton("Stand");
         JButton doubleDownButton = new JButton("Double Down");
         JButton surrenderButton = new JButton("Surrender");
-
-        panel.add(hitButton);
-        panel.add(standButton);
-        panel.add(doubleDownButton);
-        panel.add(surrenderButton);
+        //add buttons that the player can interact with (until they can't)
+        buttonPanel.add(hitButton);
+        buttonPanel.add(standButton);
+        buttonPanel.add(doubleDownButton);
+        buttonPanel.add(surrenderButton);
 
         // Add action listeners to buttons
         hitButton.addActionListener(e -> hitButton("Hit"));
@@ -137,11 +138,11 @@ public class main {
         doubleDownButton.addActionListener(e -> doubleDownButton("Double Down"));
         surrenderButton.addActionListener(e -> surrenderButton("Surrender"));
 
-        return panel;
+        return buttonPanel;
     }
     private static void updateLabels(){
         SwingUtilities.invokeLater(() -> { //This line was instructed by chatGPT. I had no clue about invokeLater, and this came up in my quest to find out
-        playerBalance.setText("Balance: "+user.balance+" chips"); //how to update individual components of the GUI
+        playerBalance.setText("Change in Balance: "+user.balance+" chips"); //how to update individual components of the GUI
         playerWager.setText("Wager: "+user.wager+" chips");
         playerHand.setText("Hand Value: "+user.handValue());
         HouseHand.setText("House Card: "+mrHouse.hand.get(0).getCardName());
@@ -167,12 +168,16 @@ public class main {
         user.surrender();
         user.balance-=wager/2;
         textArea.append("Player surrenders!");
+        for (Component component : buttonPanel.getComponents()) { //Disables button components. Written by chatGPT, who is of no national origin
+            if (component instanceof JButton) {
+                ((JButton) component).setEnabled(false);
+            }
+        }
         updateLabels();
     }
     private static void endGame(){ //Evaluates and ends the game
         if(user.handValue()<=21){ //This block of code was made by a red blooded American (also Will)
             mrHouse.turn(deck);
-            String houseCards;
             for(int i = 1; i < mrHouse.hand.size(); i++){
                 textArea.append("House drew a "+mrHouse.hand.get(i).getCardName()+"!"+"\n");
             }
@@ -203,6 +208,11 @@ public class main {
                 reader.close();
             } catch (IOException e) {
                 e.printStackTrace(); // Handle the exception appropriately
+            }
+        } //Most of these try catches are from when we tried to incorporate file IO. Will we? Probably not, as we have two hours until submission. As far as I'm concerned, their existence isn't hurting anyone
+        for (Component component : buttonPanel.getComponents()) { //Disables button components. Written by chatGPT, who is of no national origin
+            if (component instanceof JButton) {
+                ((JButton) component).setEnabled(false);
             }
         }
         updateLabels();

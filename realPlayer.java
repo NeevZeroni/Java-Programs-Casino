@@ -34,7 +34,13 @@ public class realPlayer extends player{
                 // Set an initial balance of 1000 chips for new players
                 balance = 1000;
             }else{
-                balance = Integer.parseInt(balanceString);
+                try {
+                    balance = Integer.parseInt(balanceString);
+                } catch (NumberFormatException ex) {
+                    System.err.println("Invalid input for balance. Setting balance to 1000");
+                    balance = 1000;
+                }
+                
             }
         } catch (IOException | NumberFormatException e) {
             e.printStackTrace(); // Handle the exception appropriately
