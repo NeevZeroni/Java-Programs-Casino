@@ -1,13 +1,27 @@
+import java.io.*;
 import java.util.ArrayList;
 
 public class realPlayer extends player{
     int balance;
     int wager;
-    public realPlayer(){
-        balance = 1000;
+    static BufferedWriter write;
+    static BufferedReader read;
+    public realPlayer(BufferedWriter writer, BufferedReader reader){
+        write=writer;
+        read=reader;
+    }
+    public void createBalance(){
+        try {
+            String balanceString = read.readLine();
+            if (balanceString == null) {
+                // Set an initial balance of 1000 chips for new players
+                balance = 1000;
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace(); // Handle the exception appropriately
+        }
     }
 	void makeWager(int input){
-
 		wager = input;
 		balance -= input;
 	}
@@ -34,6 +48,21 @@ public class realPlayer extends player{
             if(handValue()>21){
                 gamePlay = false;
             }
+        }
+    }
+    public void saveBalance() throws IOException {
+        write.write(String.valueOf(balance));
+        write.newLine();
+        write.flush();
+    }
+    public void loadBalance() {
+        try {
+            String balanceString = read.readLine();
+            if (balanceString != null) {
+                balance = Integer.parseInt(balanceString);
+            }
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace(); // Handle the exception appropriately
         }
     }
 }
