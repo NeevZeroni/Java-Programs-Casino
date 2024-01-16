@@ -3,7 +3,7 @@ public class Card {
     // These arrays hold the suits, faces, and values of the cards
     String suits[] = {"Hearts", "Diamonds", "Clubs", "Spades"};
     String faces[] = {"2", "3", "4", "5", "6", "7", "8", "9", "Jack", "Queen", "King", "Ace"};
-    int values[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
+    static int values[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10};
 
     // These variables are declared to store the suit, face, and wether a card is face up or face down
     int suit;

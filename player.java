@@ -8,7 +8,7 @@ public abstract class player {
     int handValue(){
         int handValue = 0;
         for(int x = 0; x<hand.size(); x++){
-                handValue += hand.get(x).face+2;
+                handValue += Card.values[hand.get(x).face];
             }
         return handValue;
     }
@@ -17,11 +17,5 @@ public abstract class player {
         deck.remove(deck.size()-1);
         
     }
-    void didTheyBust(){
-        if (handValue()>21) {
-            
-        }
-    }
     boolean stand = false;
-    abstract void turn(ArrayList deck);
 }

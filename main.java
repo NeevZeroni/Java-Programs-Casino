@@ -17,7 +17,7 @@ public class main {
             e.printStackTrace();
         }
     }
-    private static realPlayer user = new realPlayer(writer,reader);
+    private static realPlayer user = new realPlayer();
     static ArrayList<Card> deck = new ArrayList<>();
     private static house mrHouse = new house();
 
@@ -61,25 +61,23 @@ public class main {
                 if (wagerTextField.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Please enter a wager.", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    int wager = Integer.parseInt(wagerTextField.getText());
-                    user.makeWager(wager); //User makes wager. From Will
+                    wager = Integer.parseInt(wagerTextField.getText());
+
                     wagerFrame.dispose(); // Close the wager input screen
                     initializeGame();
                 }
             }
         });
-
         wagerFrame.getContentPane().add(wagerPanel);
         wagerFrame.setSize(300, 150);
         wagerFrame.setLocationRelativeTo(null);
         wagerFrame.setVisible(true);
     }
-
     private static void initializeGame() { //Don't be fooled I wrote this part -- Will
         createDeck();
         mrHouse.hit(mrHouse.hand, deck);
-        user.createBalance();
-        user.loadBalance();
+        user.loadBalance(); //One of these isn't working as of 9:12 at night
+        user.makeWager(wager); //User makes wager. From Will
         SwingUtilities.invokeLater(() -> {
             createAndShowGUI();
         });
@@ -117,6 +115,7 @@ public class main {
         panel.add(playerWager);
         panel.add(playerHand);
         panel.add(HouseHand);
+
         return panel;
     }
     private static JPanel createButtonPanel() {
@@ -148,7 +147,7 @@ public class main {
         HouseHand.setText("House Card: "+mrHouse.hand.get(0).getCardName());
         });
     }
-    private static void hitButton(String action) { //These blocks of code were made by Will
+    private static void hitButton(String action) { //These blocks of code were made by Will. They are the four buttons and their functions. This used to be a really ugly switch statement until someone told me how to do this on StackExchange
         user.hit(user.hand,deck);
         textArea.append(action + "! You drew "+ user.hand.get(0).getCardName()+ "\n");
         if(user.handValue()>21){
@@ -166,6 +165,7 @@ public class main {
     }
     private static void surrenderButton(String action) {
         user.surrender();
+        user.balance-=wager/2;
         textArea.append("Player surrenders!");
         updateLabels();
     }
@@ -181,6 +181,7 @@ public class main {
                 user.balance-=wager;
             }else if(mrHouse.handValue()>21){
                 textArea.append("House busts! Player wins!");
+                user.balance+=wager;
             }else if(user.handValue()>mrHouse.handValue()){
                 textArea.append("Player Wins!");
                 user.balance+=wager;
